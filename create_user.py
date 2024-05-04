@@ -35,7 +35,7 @@ def lambda_handler(event, context):
     body = json.loads(event['body'])
     full_name = body.get('full_name')
     mob_number = body.get('mob_number')
-    pan_num = body.get('pan_number')
+    pan_number = body.get('pan_number')
     manager_id = body.get('manager_id')
 
     # Validation of different inputs
@@ -65,7 +65,7 @@ def lambda_handler(event, context):
         }
         
         
-    pan_number = validate_pan_number(pan_num)
+    pan_number = validate_pan_number(pan_number)
     
     if not pan_number:
         return {
