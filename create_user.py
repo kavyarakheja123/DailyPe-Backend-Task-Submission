@@ -58,7 +58,7 @@ def lambda_handler(event, context):
             'body': json.dumps({'error': 'Invalid mobile number'})
         }
     
-    if not pan_num:
+    if not pan_number:
         return {
             'statusCode': 400,
             'body': json.dumps({'error': 'Invalid PAN number'})
