@@ -32,8 +32,8 @@ def validate_manager(manager_id):
 
 def update_user(user_ids, update_data):
     dynamodb = boto3.resource('dynamodb')
-    users_table = dynamodb.Table('Users')  # Replace 'Users' with your actual table name
-    managers_table = dynamodb.Table('manager')  # Replace 'Managers' with your actual table name
+    users_table = dynamodb.Table('Users')
+    managers_table = dynamodb.Table('manager')  
 
     # Validate update_data keys
     allowed_keys = {'full_name', 'mob_num', 'pan_num', 'manager_id'}
