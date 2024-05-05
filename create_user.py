@@ -13,22 +13,22 @@ def validate_mobile_number(mobile_num):
     mobile_num = re.sub(r'\D', '', mobile_num)
     if len(mobile_num) == 10:
         return mobile_num
-    elif len(mobile_num) == 12 and mobile_num.startswith('91'):
+    elif len(mobile_num) == 12 and mobile_num.startswith('91'): #if a mobile is staring with country code (91) we will remove that
         return mobile_num[2:]
-    elif len(mobile_num) == 11 and mobile_num.startswith('0'):
+    elif len(mobile_num) == 11 and mobile_num.startswith('0'): #if a mobile number is staring with country code (1) we will remove that
         return mobile_num[1:]
     else:
         return None
 
 def validate_pan_number(pan_num):
     pan_num = pan_num.upper()
-    if re.match(r'^[A-Z]{5}[0-9]{4}[A-Z]$', pan_num):
+    if re.match(r'^[A-Z]{5}[0-9]{4}[A-Z]$', pan_num): #validating pan_number as per defined format for ex:- FDXPR4165AQ is a valid pan_number and FDXPR41Y7Q is invalid
         return pan_num
     else:
         return None
 
 def validate_manager(manager_id):
-    response = manager_table.get_item(Key={'manager_id': manager_id})
+    response = manager_table.get_item(Key={'manager_id': manager_id}) #checking if the mentioned manager_id is present in manager table or not
     if 'Item' in response:
         return True
     else:
@@ -62,6 +62,12 @@ def lambda_handler(event, context):
             'statusCode': 400,
             'body': json.dumps({'error': 'Invalid mobile number'})
         }
+
+    #we have used two checks here for validating mobile_number because:-
+    # 1.) The first check will validate if the user has entered the mobile number or not
+    # 2.) The second check will validate whether the user has entered a valid mobile number or not
+
+    #The same logic applies for validating pan_number below:-
         
     if not pan_num:
         return {
