@@ -4,18 +4,18 @@ from boto3.dynamodb.conditions import Key
 
 def get_users(event):
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('UserTable')
+    table = dynamodb.Table('Users')
 
     # Parse request body
     body = json.loads(event['body'])
-    mob_number = body.get('mob_number')
+    mob_num = body.get('mob_num')
     user_id = body.get('user_id')
     manager_id = body.get('manager_id')
 
     if user_id:
         response = table.query(KeyConditionExpression=Key('user_id').eq(user_id))
-    if mob_number:
-        response = table.scan(FilterExpression=Key('mob_number').eq(mob_number))
+    elif mob_num:
+        response = table.scan(FilterExpression=Key('mob_num').eq(mob_num))
     elif manager_id:
         response = table.scan(FilterExpression=Key('manager_id').eq(manager_id))
     else:
@@ -30,8 +30,8 @@ def get_users(event):
             'user_id': user['user_id'],
             'manager_id': user.get('manager_id', ''),
             'full_name': user['full_name'],
-            'mob_number': user['mob_number'],
-            'pan_number': user['pan_number'],
+            'mob_num': user['mob_num'],
+            'pan_num': user['pan_num'],
             'created_at': user['created_at'],
             'updated_at': user.get('updated_at', ''),
             'is_active': user['is_active']
