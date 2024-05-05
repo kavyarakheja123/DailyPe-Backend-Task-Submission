@@ -2,12 +2,15 @@ import json
 import uuid
 import re
 import boto3
+from datetime import datetime
 
 dynamodb = boto3.resource('dynamodb')
-user_table = dynamodb.Table('UserTable')
+user_table = dynamodb.Table('Users')
 manager_table = dynamodb.Table('manager')
 
 def validate_mobile_number(mobile_num):
+    # Remove any non-numeric characters
+    mobile_num = re.sub(r'\D', '', mobile_num)
     if len(mobile_num) == 10:
         return mobile_num
     elif len(mobile_num) == 12 and mobile_num.startswith('91'):
@@ -34,45 +37,46 @@ def validate_manager(manager_id):
 def lambda_handler(event, context):
     body = json.loads(event['body'])
     full_name = body.get('full_name')
-    mob_number = body.get('mob_number')
-    pan_number = body.get('pan_number')
+    mob_num = body.get('mob_num')
+    pan_num = body.get('pan_num')
     manager_id = body.get('manager_id')
 
     # Validation of different inputs
+    
     if not full_name:
         return {
             'statusCode': 400,
             'body': json.dumps({'error': 'Full name must not be empty'})
         }
         
-    if not mob_number:
+    if not mob_num:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'error': 'Please enter your Mobile Number'})
+        }
+        
+    mob_num = validate_mobile_number(mob_num)
+    
+    if not mob_num:
         return {
             'statusCode': 400,
             'body': json.dumps({'error': 'Invalid mobile number'})
         }
-    mob_number = validate_mobile_number(mob_number)
-    
-    if not mob_number:
+        
+    if not pan_num:
         return {
             'statusCode': 400,
-            'body': json.dumps({'error': 'Invalid mobile number'})
-        }
+            'body': json.dumps({'error': 'Please enter your PAN number'})
+        }        
+        
+    pan_num = validate_pan_number(pan_num)
     
-    if not pan_number:
+    if not pan_num:
         return {
             'statusCode': 400,
             'body': json.dumps({'error': 'Invalid PAN number'})
         }
         
-        
-    pan_number = validate_pan_number(pan_number)
-    
-    if not pan_number:
-        return {
-            'statusCode': 400,
-            'body': json.dumps({'error': 'Invalid PAN number'})
-        }
-    
     if manager_id and not validate_manager(manager_id):
         return {
             'statusCode': 400,
@@ -81,16 +85,15 @@ def lambda_handler(event, context):
 
     # Insert user data into DynamoDB
     user_id = str(uuid.uuid4())
-    
     user_table.put_item(
         Item={
             'user_id': user_id,
             'full_name': full_name,
-            'mob_number': mob_number,
-            'pan_number': pan_number,
+            'mob_num': mob_num,
+            'pan_num': pan_num,
             'manager_id': manager_id,
-            # 'created_at': str(datetime.utcnow()),
-            # 'updated_at': '',
+            'created_at': str(datetime.utcnow()),
+            'updated_at': '',
             'is_active': True
         }
     )
@@ -99,3 +102,4 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'body': json.dumps({'message': 'User created successfully', 'user_id': user_id})
     }
+
