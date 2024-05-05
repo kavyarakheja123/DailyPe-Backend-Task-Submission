@@ -12,6 +12,9 @@
 Function URLs for different functions:- 
 
 create_user:- https://kngjl6utz6g7cwdfgu2o4mbwka0kxshg.lambda-url.ap-south-1.on.aws/
+
 delete_user:- https://42gerorl6ixyhbrgl376uncuvi0faqkj.lambda-url.ap-south-1.on.aws/
+
 get_user:- https://qzzf62c3gpmn5utarkg2ks3jb40gzfdt.lambda-url.ap-south-1.on.aws/
+
 update_user:- https://z75hn2vrvom2l25l5xkhugyccu0bzjlm.lambda-url.ap-south-1.on.aws/
