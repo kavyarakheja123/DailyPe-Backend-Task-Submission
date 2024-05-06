@@ -22,4 +22,4 @@ update_user:- https://z75hn2vrvom2l25l5xkhugyccu0bzjlm.lambda-url.ap-south-1.on.
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Manager table will have two attributes that are manager_id (uuid) and manager_name(string). We can add a new manager in the manager table and generated a uuid against each new manager. Active manager has been validated in the create_user code as well, which checks if an active member as the same uuid mentioned by user is present in the manager table or not. 
+Manager table will have three attributes that are manager_id (uuid), manager_name(string) and created_at(string). We can add a new manager in the manager table and generated a uuid against each new manager. Active manager has been validated in the create_user code as well, which checks if an active member as the same uuid mentioned by user is present in the manager table or not. 
