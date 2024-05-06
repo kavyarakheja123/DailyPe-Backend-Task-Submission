@@ -15,7 +15,7 @@ def validate_mobile_number(mobile_num):
         return mobile_num
     elif len(mobile_num) == 12 and mobile_num.startswith('91'): #if a mobile is staring with country code (91) we will remove that
         return mobile_num[2:]
-    elif len(mobile_num) == 11 and mobile_num.startswith('0'): #if a mobile number is staring with country code (1) we will remove that
+    elif len(mobile_num) == 11 and mobile_num.startswith('0'): #if a mobile number is staring with country code (0) we will remove that
         return mobile_num[1:]
     else:
         return None
