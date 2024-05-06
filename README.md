@@ -19,6 +19,8 @@ get_user:- https://qzzf62c3gpmn5utarkg2ks3jb40gzfdt.lambda-url.ap-south-1.on.aws
 
 update_user:- https://z75hn2vrvom2l25l5xkhugyccu0bzjlm.lambda-url.ap-south-1.on.aws/
 
+add_manager:- https://oxldqvfyppwt4ujwejlz2bbhfy0ymwjc.lambda-url.ap-south-1.on.aws/
+
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
