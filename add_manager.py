@@ -23,7 +23,7 @@ def add_manager(manager_name):
 
 def lambda_handler(event, context):
   
-    body = json.loads(event['body'])
+    body = json.loads(event.get('body'))
     manager_name = body.get('manager_name')
   
     response = add_manager(manager_name)
