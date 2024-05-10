@@ -35,19 +35,6 @@ def validate_manager(manager_id):
         return False
 
 def update_user(user_ids, update_data):
-    # Validate update_data keys
-    allowed_keys = {'full_name', 'mob_num', 'pan_num', 'manager_id'}
-    update_keys = set(update_data.keys())
-    if update_keys - allowed_keys:
-        return {'error': 'Extra keys found. Only individual updates allowed.'}
-
-    # Check if bulk update is only for manager_id
-    if update_keys == {'manager_id'}:
-        # Validate manager_id
-        if not validate_manager(update_data['manager_id']):
-            return {'error': 'Invalid manager_id'}
-
-    # Validate and update each user
     for user_id in user_ids:
         # Check if user exists
         response = users_table.get_item(Key={'user_id': user_id})
@@ -109,6 +96,17 @@ def lambda_handler(event, context):
             'statusCode': 400,
             'body': json.dumps({'error': 'No user_ids provided'})
         }
+        
+    update_keys = set(update_data.keys())
+
+    if len(user_ids)>1 :
+        if update_keys == {'manager_id'}:
+            if not validate_manager(update_data['manager_id']):
+                return {'error': 'Invalid manager_id'} 
+        
+        else : 
+            return {'error': 'Extra keys found. Only individual updates allowed.'}
+            
 
     # Update users
     response = update_user(user_ids, update_data)
