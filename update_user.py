@@ -4,6 +4,10 @@ import uuid
 import re
 from datetime import datetime
 
+dynamodb = boto3.resource('dynamodb')
+users_table = dynamodb.Table('Users') 
+managers_table = dynamodb.Table('manager') 
+
 def validate_mobile_number(mobile_num):
     # Remove any non-numeric characters
     mobile_num = re.sub(r'\D', '', mobile_num)
@@ -24,17 +28,13 @@ def validate_pan_number(pan_num):
         return None
 
 def validate_manager(manager_id):
-    response = manager_table.get_item(Key={'manager_id': manager_id})
+    response = managers_table.get_item(Key={'manager_id': manager_id})
     if 'Item' in response:
         return True
     else:
         return False
 
 def update_user(user_ids, update_data):
-    dynamodb = boto3.resource('dynamodb')
-    users_table = dynamodb.Table('Users')
-    managers_table = dynamodb.Table('manager')  
-
     # Validate update_data keys
     allowed_keys = {'full_name', 'mob_num', 'pan_num', 'manager_id'}
     update_keys = set(update_data.keys())
