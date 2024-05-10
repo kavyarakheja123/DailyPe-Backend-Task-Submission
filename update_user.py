@@ -2,6 +2,7 @@ import boto3
 import json
 import uuid
 import re
+import uuid
 from datetime import datetime
 
 dynamodb = boto3.resource('dynamodb')
@@ -54,15 +55,15 @@ def update_user(user_ids, update_data):
             elif key == 'pan_num':
                 if not validate_pan_number(value):
                     return {'error': 'Invalid PAN number'}
-                updated_data[key] = value
+                updated_data[key] = value 
             elif key == 'manager_id':
                 if not validate_manager(value):
                     return {'error': 'Invalid manager_id'}
-                updated_data[key] = value
+                updated_data[key] = value 
             else:
                 updated_data[key] = value
-
-        # Update user data
+                
+                
         if updated_data:
             # If manager_id is being updated
             if 'manager_id' in updated_data:
@@ -73,13 +74,31 @@ def update_user(user_ids, update_data):
                         UpdateExpression='SET is_active = :false, updated_at = :updated_at',
                         ExpressionAttributeValues={':false': False, ':updated_at': str(datetime.utcnow())}
                     )
+                    
+                    user_data['manager_id'] = updated_data['manager_id']
+                    user_data.update(updated_data)
+                    
+                    new_user_id = str(uuid.uuid4())
+                    
+                    users_table.put_item(
+                        
+                        Item ={
+                            'user_id' : new_user_id,
+                            'full_name': user_data['full_name'],
+                            'mob_num': user_data['mob_num'],
+                            'pan_num': user_data['pan_num'],
+                            'manager_id': user_data['manager_id'],
+                            'created_at': user_data['created_at'],
+                            'is_active' : True,
+                            'updated_at': str(datetime.utcnow())
+                        }
+                    )
+                    
+                    
                 else:
                     user_data['manager_id'] = updated_data['manager_id']
+                    user_data['updated_at'] = str(datetime.utcnow())
                     
-            # Create new entry with updated data
-            user_data.update(updated_data)
-            user_data['updated_at'] = str(datetime.utcnow())
-            users_table.put_item(Item=user_data)
 
     return {'message': 'Users updated successfully'}
 
