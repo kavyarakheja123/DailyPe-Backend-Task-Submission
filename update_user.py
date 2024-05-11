@@ -67,8 +67,8 @@ def update_user(user_ids, update_data):
         if updated_data:
             # If manager_id is being updated
             if 'manager_id' in updated_data:
-                if 'manager_id' in user_data:
-                    # Deactivate current user entry
+                if 'manager_id' in user_data and user_data.get('manager_id') is not None:
+                    
                     users_table.update_item(
                         Key={'user_id': user_id},
                         UpdateExpression='SET is_active = :false, updated_at = :updated_at',
@@ -93,11 +93,36 @@ def update_user(user_ids, update_data):
                             'updated_at': str(datetime.utcnow())
                         }
                     )
+                
+                else :
+                    updated_values = {
+                        'user_id' : updated_data.get('user_id'),
+                        'full_name' : updated_data.get('full_name'),
+                        'mob_num' : updated_data.get('mob_num'), 
+                        'pan_num' : updated_data.get('pan_num'), 
+                        'manager_id' : updated_data.get('manager_id'), 
+                        'is_active' : True,
+                        'updated_at' : str(datetime.utcnow()),
+                        'created_at' : user_data.get('created_at')
+                    }
                     
+                    update_expression_parts = []
+                    expression_attribute_values = {}
                     
-                else:
-                    user_data['manager_id'] = updated_data['manager_id']
-                    user_data['updated_at'] = str(datetime.utcnow())
+                    for attribute,new_value in updated_values.items():
+                        if new_value is not None:
+                            
+                            update_expression_parts.append(f"{attribute} = :{attribute}")
+                            expression_attribute_values[f":{attribute}"] = new_value
+                        
+                            update_expression = "SET " + ", ".join(update_expression_parts)
+                    
+                    users_table.update_item(
+                        Key = {'user_id' : user_id},
+                        UpdateExpression = update_expression,
+                        ExpressionAttributeValues = expression_attribute_values,
+                    )
+                    
                     
 
     return {'message': 'Users updated successfully'}
